@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fill in the Blanks - Drag and Drop Exercise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .exercise-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .instructions {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .sentence {
+            margin: 15px 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .blank {
+            display: inline-block;
+            width: 150px;
+            height: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            vertical-align: middle;
+            background-color: #f9f9f9;
+        }
+        .draggable {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: grab;
+            font-size: 16px;
+            text-align: center;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fill in the Blanks - Drag and Drop Exercise</h1>
+    <div class="exercise-container">
+        <div class="instructions">
+            Drag and drop the correct keywords into the blank slots to complete each sentence.
+        </div>
+        <div id="exercise">
+            <div class="sentence">
+                <strong>Why Iterative Design Matters:</strong>
+            </div>
+            <div class="sentence">
+                You collect <span class="blank" data-answer="feedback"></span>, make changes, and improve your design step by step.
+            </div>
+            <div class="sentence">
+                Small efforts add up over time to create <span class="blank" data-answer="better designs"></span>.
+            </div>
+            <div class="sentence">
+                It helps you try out different ideas and understand the <span class="blank" data-answer="design context"></span>.
+            </div>
+            <div class="sentence">
+                <strong>Why Understanding Users is Important:</strong>
+            </div>
+            <div class="sentence">
+                Users don’t always know exactly what they <span class="blank" data-answer="want"></span>.
+            </div>
+            <div class="sentence">
+                A good design solves their <span class="blank" data-answer="problems"></span>.
+            </div>
+            <div class="sentence">
+                A great design surprises them by giving them something they didn’t even know they <span class="blank" data-answer="needed"></span>.
+            </div>
+        </div>
+        <div id="keywords">
+            <div class="draggable" draggable="true">feedback</div>
+            <div class="draggable" draggable="true">better designs</div>
+            <div class="draggable" draggable="true">design context</div>
+            <div class="draggable" draggable="true">want</div>
+            <div class="draggable" draggable="true">problems</div>
+            <div class="draggable" draggable="true">needed</div>
+        </div>
+    </div>
+
+    <script>
+        const draggables = document.querySelectorAll('.draggable');
+        const blanks = document.querySelectorAll('.blank');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.classList.add('dragging');
+            });
+
+            draggable.addEventListener('dragend', () => {
+                draggable.classList.remove('dragging');
+            });
+        });
+
+        blanks.forEach(blank => {
+            blank.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const dragging = document.querySelector('.dragging');
+                blank.appendChild(dragging);
+            });
+        });
+    </script>
+</body>
+</html>
