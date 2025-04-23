@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Guessing Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f8ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        h1 {
+            color: #4a4a9e;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        
+        .enter-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: #5d5dff;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .enter-button:hover {
+            background-color: #4a4a9e;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(93, 93, 255, 0.4);
+        }
+        
+        .game-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: #5d5dff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-icon">🎮</div>
+        <h1>Welcome to the Guessing Game!</h1>
+        <p>Test your intuition and see if you can guess the correct answer. Challenge yourself and have fun!</p>
+        <a href="/game1/index.html" class="enter-button">PLAY NOW</a>
+    </div>
+</body>
+</html>
