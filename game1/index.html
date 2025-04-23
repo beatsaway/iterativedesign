@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Typical User - Design Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+        
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .user-statement {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            font-style: italic;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            line-height: 1.4;
+        }
+        
+        .keyword-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .keyword-button {
+            padding: 20px 15px;
+            text-align: center;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 90px;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .keyword-button:nth-child(1) { background-color: #4CAF50; }
+        .keyword-button:nth-child(2) { background-color: #2196F3; }
+        .keyword-button:nth-child(3) { background-color: #FF9800; }
+        .keyword-button:nth-child(4) { background-color: #9C27B0; }
+        .keyword-button:nth-child(5) { background-color: #E91E63; }
+        .keyword-button:nth-child(6) { background-color: #00BCD4; }
+        .keyword-button:nth-child(7) { background-color: #8BC34A; }
+        .keyword-button:nth-child(8) { background-color: #FF5722; }
+        .keyword-button:nth-child(9) { background-color: #607D8B; }
+
+        .keyword-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            filter: brightness(1.1);
+        }
+        
+        .keyword-button.clicked {
+            background-color: #f5f5f5;
+            cursor: default;
+            color: #333;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .button-answer {
+            margin-top: 12px;
+            font-weight: bold;
+            color: #000;
+            font-size: 16px;
+            display: none;
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+            width: 100%;
+            line-height: 1.5;
+        }
+        
+        .keyword-button.clicked .button-answer {
+            display: block;
+        }
+        
+        .crystal-ball {
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .crystal-ball:hover {
+            transform: scale(1.2);
+        }
+        
+        .crystal-answer {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: none;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .result-message {
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        
+        .incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        
+        .clicked-count {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .instructions {
+            background-color: #fffde7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .instructions h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .instructions p {
+            margin-bottom: 12px;
+        }
+
+        .instructions strong {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        /* Add modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 1% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            max-height: 98vh;
+            overflow-y: auto;
+        }
+
+        .modal-image {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            line-height: 1.2;
+        }
+
+        .modal-description {
+            font-size: 16px;
+            line-height: 1.4;
+            color: #444;
+            margin: 15px 0;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        .play-btn {
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .product-select {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .start-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="instructions">
+            <h2>How to Play "Your Typical User"</h2>
+            <p><strong>One player is the Typical User:</strong> You'll see the correct answer when you click the crystal ball 🔮. Your job is to answer questions from the designers about what you want to clean.</p>
+            <p><strong>Everyone else is a Designer:</strong> Click on the questions to see the user's answers. Use these clues to figure out what cleaning product the user actually wants!</p>
+        </div>
+        
+        <div class="start-container">
+            <button class="play-btn" id="playBtn">Start Game</button>
+            <select class="product-select" id="productSelect">
+                <option value="random">Random Product</option>
+            </select>
+        </div>
+        
+        <div id="gameArea" style="display: none;">
+            <div class="user-statement" id="userStatement">Your typical user said, 'I want something that can clean.'</div>
+            
+            <div class="keyword-grid" id="commonKeywords"></div>
+            
+            <div class="teacher-section">
+                <button class="crystal-ball" id="crystalBall">🔮</button>
+                <div class="crystal-answer" id="crystalAnswer"></div>
+            </div>
+            
+            <div class="result-message" id="resultMessage"></div>
+        </div>
+    </div>
+    
+    <!-- Add modal for product reveal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title" id="modalTitle"></h2>
+            <img id="modalImage" class="modal-image" src="" alt="Product Image">
+            <div id="modalDescription" class="modal-description"></div>
+        </div>
+    </div>
+
+    <script>
+        // Common questions (same across all products)
+        const commonQuestions = [
+            "What do you want to clean?",
+            "Where will you use it?",
+            "What is your budget?",
+            "How often do you need to clean?",
+            "When do you need to use it?",
+            "Why do you want to clean?",
+            "Who are you cleaning for?",
+            "Does it need to be easy to maintain?",
+            "What surfaces need to be cleaned?"
+        ];
+
+        // Game data
+        const products = [
+            {
+                name: "USB-Powered Mini Vacuum Cleaner for Keyboards",
+                id: "usbVacuum",
+                description: "A compact, USB-powered vacuum cleaner specifically designed for cleaning keyboards and other small electronic devices. Perfect for removing crumbs, dust, and debris from tight spaces. Features a slim nozzle for precise cleaning and a built-in LED light to spot hidden dirt. Ideal for office workers, gamers, and anyone who wants to maintain a clean workspace.",
+                commonAnswers: {
+                    "What do you want to clean?": "Small debris, crumbs, and dust in tight spaces.",
+                    "Where will you use it?": "At my desk, mostly for my electronic devices.",
+                    "What is your budget?": "Around £15-20, nothing too expensive.",
+                    "How often do you need to clean?": "Several times a week after eating at my desk.",
+                    "When do you need to use it?": "Usually after meals or when I notice debris on my keyboard.",
+                    "Why do you want to clean?": "My keyboard gets crumbs and dust that affect typing and looks unprofessional.",
+                    "Who are you cleaning for?": "Myself, to keep my workspace tidy and my equipment functioning well.",
+                    "Does it need to be easy to maintain?": "Yes, I don't want to spend much time cleaning the cleaner itself.",
+                    "What surfaces need to be cleaned?": "Mainly keyboards, but also other electronic devices."
+                }
+            },
+            {
+                name: "Mop for Toilet Floor",
+                id: "toiletMop",
+                description: "A specialized mop designed specifically for bathroom floors, with a focus on cleaning around toilets. Features a compact head for reaching tight corners, antimicrobial properties to prevent bacterial growth, and a quick-drying design. Perfect for maintaining hygiene in small bathroom spaces and preventing water damage.",
+                commonAnswers: {
+                    "What do you want to clean?": "Mainly floors in small spaces.",
+                    "Where will you use it?": "In the bathroom, particularly around the toilet.",
+                    "What is your budget?": "Around £10-25, something reasonably priced.",
+                    "How often do you need to clean?": "At least once or twice a week.",
+                    "When do you need to use it?": "During regular bathroom cleaning or when there are spills.",
+                    "Why do you want to clean?": "To maintain hygiene in the bathroom and prevent water damage.",
+                    "Who are you cleaning for?": "For everyone in the household who uses the bathroom.",
+                    "Does it need to be easy to maintain?": "Yes, it should be easy to clean after use.",
+                    "What surfaces need to be cleaned?": "Tiled or vinyl bathroom flooring, especially in tight corners."
+                }
+            },
+            {
+                name: "Sponge for Cleaning Dishes",
+                id: "dishSponge",
+                description: "A high-quality dish sponge with dual-textured surfaces for effective cleaning. The soft side is gentle on delicate items while the scrubby side tackles tough food residue. Features quick-drying properties and antimicrobial protection. An essential tool for maintaining kitchen hygiene and making dishwashing more efficient.",
+                commonAnswers: {
+                    "What do you want to clean?": "Mostly plates, glasses, and cookware.",
+                    "Where will you use it?": "In my kitchen sink while washing dishes.",
+                    "What is your budget?": "Just a few pounds, it's a simple cleaning tool.",
+                    "How often do you need to clean?": "Daily, sometimes multiple times per day.",
+                    "When do you need to use it?": "After meals and when preparing food.",
+                    "Why do you want to clean?": "To remove food residue and maintain kitchen hygiene.",
+                    "Who are you cleaning for?": "For my household, to ensure everyone has clean dishes to use.",
+                    "Does it need to be easy to maintain?": "It should be quick to rinse out between uses.",
+                    "What surfaces need to be cleaned?": "Various kitchenware including ceramics, glass, and metal."
+                }
+            },
+            {
+                name: "Medical Grade Air Purifier for Hospitals",
+                id: "airPurifier",
+                description: "A professional-grade air purification system designed specifically for medical environments. Features HEPA filtration, UV-C light sterilization, and advanced air quality monitoring. Essential for maintaining sterile environments in hospitals, clinics, and other healthcare facilities. Helps prevent the spread of airborne infections and creates a healthier environment for patients and staff.",
+                commonAnswers: {
+                    "What do you want to clean?": "The air in a highly sensitive environment.",
+                    "Where will you use it?": "In medical facilities like hospitals and clinics.",
+                    "What is your budget?": "Around £500-1000, quality is most important.",
+                    "How often do you need to clean?": "Continuously, 24 hours a day in many cases.",
+                    "When do you need to use it?": "All the time, especially during patient care hours.",
+                    "Why do you want to clean?": "To prevent the spread of infections and create a healthier environment for patients.",
+                    "Who are you cleaning for?": "For patients with compromised immune systems and healthcare workers.",
+                    "Does it need to be easy to maintain?": "It needs to be easy to maintain and clean.",
+                    "What surfaces need to be cleaned?": "Not surfaces - it needs to clean the air thoroughly."
+                }
+            },
+            {
+                name: "Moisturizing Facial Scrub Cream",
+                id: "facialScrub",
+                description: "A gentle yet effective facial scrub that combines exfoliation with deep moisturization. Contains natural exfoliants and hydrating ingredients to remove dead skin cells while maintaining skin's moisture barrier. Perfect for achieving smooth, radiant skin without irritation. Suitable for regular use in your skincare routine.",
+                commonAnswers: {
+                    "What do you want to clean?": "My face, specifically removing dead skin cells and impurities.",
+                    "Where will you use it?": "In the bathroom as part of my skincare routine.",
+                    "What is your budget?": "Around £15-30 for a quality product.",
+                    "How often do you need to clean?": "About 2-3 times per week.",
+                    "When do you need to use it?": "Usually in the evening as part of my nighttime skincare routine.",
+                    "Why do you want to clean?": "To improve my skin texture and appearance, and prevent breakouts.",
+                    "Who are you cleaning for?": "For myself, to boost my confidence and maintain healthy skin.",
+                    "Does it need to be easy to maintain?": "It just needs to be easy to apply and rinse off.",
+                    "What surfaces need to be cleaned?": "Just my facial skin."
+                }
+            },
+            {
+                name: "Photo Filter That Makes Your Face Look Clean",
+                id: "photoFilter",
+                description: "A sophisticated photo editing filter designed to enhance facial features while maintaining a natural look. Smooths skin texture, reduces blemishes, and brightens complexion without appearing artificial. Perfect for social media posts and professional photos. Easy to use with customizable intensity levels.",
+                commonAnswers: {
+                    "What do you want to clean?": "I want my skin to look smoother and blemish-free in photos.",
+                    "Where will you use it?": "On my smartphone, primarily for social media posts.",
+                    "What is your budget?": "Preferably free or very low cost, under £5.",
+                    "How often do you need to clean?": "Almost daily when posting to social media.",
+                    "When do you need to use it?": "Right before posting photos to social media.",
+                    "Why do you want to clean?": "To look my best in photos and feel more confident about my appearance online.",
+                    "Who are you cleaning for?": "For my own confidence and my social media audience.",
+                    "Does it need to be easy to maintain?": "It should be easy to use without much technical knowledge.",
+                    "What surfaces need to be cleaned?": "Digital images of faces, not physical surfaces."
+                }
+            }
+        ];
+
+        // DOM elements
+        const playBtn = document.getElementById('playBtn');
+        const productSelect = document.getElementById('productSelect');
+        const gameArea = document.getElementById('gameArea');
+        const userStatement = document.getElementById('userStatement');
+        const commonKeywordsDiv = document.getElementById('commonKeywords');
+        const clickedCount = document.getElementById('clickedCount');
+        const resultMessage = document.getElementById('resultMessage');
+        const crystalBall = document.getElementById('crystalBall');
+        const crystalAnswer = document.getElementById('crystalAnswer');
+
+        let currentProduct;
+        let clickedKeywords = 0;
+        
+        // Add modal elements
+        const modal = document.getElementById('productModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalImage = document.getElementById('modalImage');
+        const modalDescription = document.getElementById('modalDescription');
+        const closeModal = document.querySelector('.close-modal');
+
+        // Close modal when clicking the X
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        function showAnswer() {
+            modalTitle.textContent = currentProduct.name;
+            modalImage.src = `${currentProduct.id}.jpg`;
+            modalDescription.textContent = currentProduct.description;
+            modal.style.display = 'block';
+        }
+
+        // Populate product select options
+        function populateProductSelect() {
+            products.forEach(product => {
+                const option = document.createElement('option');
+                option.value = product.id;
+                option.textContent = product.name;
+                productSelect.appendChild(option);
+            });
+        }
+
+        // Initialize the game
+        playBtn.addEventListener('click', startGame);
+        crystalBall.addEventListener('click', showAnswer);
+        
+        // Populate product select on load
+        populateProductSelect();
+
+        function startGame() {
+            // Reset game state
+            clickedKeywords = 0;
+            resultMessage.style.display = 'none';
+            resultMessage.className = 'result-message';
+            crystalAnswer.style.display = 'none';
+            
+            // Hide instructions and start button
+            document.querySelector('.instructions').style.display = 'none';
+            playBtn.style.display = 'none';
+            productSelect.style.display = 'none';
+            
+            // Select product based on dropdown choice
+            const selectedProductId = productSelect.value;
+            if (selectedProductId === 'random') {
+                const randomIndex = Math.floor(Math.random() * products.length);
+                currentProduct = products[randomIndex];
+            } else {
+                currentProduct = products.find(p => p.id === selectedProductId);
+            }
+            
+            // Display game area
+            gameArea.style.display = 'block';
+            
+            // Clear and populate common questions
+            commonKeywordsDiv.innerHTML = '';
+            commonQuestions.forEach((question, index) => {
+                const button = document.createElement('button');
+                button.className = 'keyword-button';
+                
+                // Create a container for the question text
+                const questionElem = document.createElement('div');
+                questionElem.textContent = question;
+                button.appendChild(questionElem);
+                
+                // Create a hidden container for the answer text (will be shown later)
+                const answerElem = document.createElement('div');
+                answerElem.className = 'button-answer';
+                answerElem.textContent = ""; // Will be filled when clicked
+                button.appendChild(answerElem);
+                
+                button.dataset.index = index;
+                button.addEventListener('click', () => handleCommonKeywordClick(index));
+                commonKeywordsDiv.appendChild(button);
+            });
+        }
+
+        function handleCommonKeywordClick(index) {
+            // Get the clicked button
+            const buttons = commonKeywordsDiv.querySelectorAll('.keyword-button');
+            const button = buttons[index];
+            
+            // Check if already clicked
+            if (button.classList.contains('clicked')) {
+                return;
+            }
+            
+            // Mark as clicked
+            button.classList.add('clicked');
+            clickedKeywords++;
+            
+            // Show question and answer
+            const question = commonQuestions[index];
+            const answer = currentProduct.commonAnswers[question];
+            
+            // Update the answer in the button
+            const answerElem = button.querySelector('.button-answer');
+            if (answerElem) {
+                answerElem.textContent = answer;
+                answerElem.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
